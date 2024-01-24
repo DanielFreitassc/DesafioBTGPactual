@@ -1,14 +1,24 @@
 package br.com.danielfreitassc.crud.controllers;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import br.com.danielfreitassc.crud.dtos.CrudDto;
 import br.com.danielfreitassc.crud.models.CrudEntity;
 import br.com.danielfreitassc.crud.repositories.CrudRepository;
@@ -41,8 +51,8 @@ public class CrudController {
      para endpoints de criação.
     */
     @PostMapping("/crud/simples")
-    public ResponseEntity<CrudEntity> saveCrud(@RequestBody CrudEntity crudEntity){
-    return ResponseEntity.status(HttpStatus.CREATED).body(crudRepository.save(crudEntity));
+        public ResponseEntity<CrudEntity> saveCrud(@RequestBody CrudEntity crudEntity){
+            return ResponseEntity.status(HttpStatus.CREATED).body(crudRepository.save(crudEntity));
     }
     /*
      Este endpoint recebe um objeto CrudDto no corpo da requisição, 
@@ -53,10 +63,10 @@ public class CrudController {
      clara entre a camada de apresentação e a camada de persistência.
     */
     @PostMapping("/crud/dto")
-    public ResponseEntity<CrudEntity> saveCrud(@RequestBody  @Valid CrudDto crudDto){
-    var crudEntity = new CrudEntity();
-    BeanUtils.copyProperties(crudDto, crudEntity);
-    return ResponseEntity.status(HttpStatus.CREATED).body(crudRepository.save(crudEntity));
+        public ResponseEntity<CrudEntity> saveCrud(@RequestBody  @Valid CrudDto crudDto){
+        var crudEntity = new CrudEntity();
+        BeanUtils.copyProperties(crudDto, crudEntity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(crudRepository.save(crudEntity));
     }
     /**
     * Endpoint responsável por criar um novo recurso CrudEntity no sistema, realizando verificações
@@ -121,6 +131,72 @@ public class CrudController {
         var crudCreated = this.crudRepository.save(crudEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(crudCreated);
     }
+    /*Exempo de POST mais comum em projetos legados*/
+    // @RequestMapping(method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.APPLICATION_JSON_VALUE) // Produz e consome JSON
+    // public CrudEntity create(@RequestBody CrudEntity crudEntity) {
+    //    return crudRepository.save(crudEntity);
+    //}
+    
+    /* End point de busca de dados em base de dados um exemplo bem simples usando recursos que repository nos da como findAll()*/
+    @GetMapping("/crud")
+    public ResponseEntity<List<CrudEntity>> getAllCrud(){
+        return ResponseEntity.status(HttpStatus.OK).body(crudRepository.findAll());
+    }
+    /* Este endpoint está aplicando o usdo de HATEOS que nada mais e que link que são criados para cada endpoint unitario lembrando para uso de  hateos precisamos que te o getOneCrud pronto */
+    @GetMapping("/crud/hateos")
+    public ResponseEntity<List<CrudEntity>>  getAllProducts(){
+        List<CrudEntity> crudList = crudRepository.findAll(); 
+        if(!crudList.isEmpty()){ 
+            for(CrudEntity crud : crudList) {
+                Long id = crud.getId();
+                crud.add(linkTo(methodOn(CrudController.class).getOneCrud(id)).withSelfRel());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(crudList); 
+    }
 
+    /* End point get que retorna um produto por id com um método do repository o findById() ou diz que o produto não foi encontrado */
+    @GetMapping("/crud/{id}")
+    public ResponseEntity<Object> getOneCrud(@PathVariable(value = "id") Long id){
+        Optional<CrudEntity> crudOne = crudRepository.findById(id);
+        if(crudOne.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(crudOne.get());
+    }
+    /* Endpoint com hateos Aqui adicionei está linha para fazer link para a lista de todos os produtos */
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id") Long id){
+        Optional<CrudEntity> crudOne = crudRepository.findById(id);
+        if(crudOne.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Crud não encontrado");
+        }
+        crudOne.get().add(linkTo(methodOn(CrudController.class).getAllProducts()).withRel("Lista de Crud"));
+        return ResponseEntity.status(HttpStatus.OK).body(crudOne.get());
+    }
+
+    /* Endoint de atualização*/
+    @PutMapping("/crud/{id}")
+    public ResponseEntity<Object> updateProduct(@PathVariable(value = "id") Long id, @RequestBody @Valid CrudDto productRecordDTO) {
+        Optional<CrudEntity> productOne = crudRepository.findById(id);
+        if(productOne.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não Encontrado");
+        }
+        var crudEntity = productOne.get();
+        BeanUtils.copyProperties(productRecordDTO, crudEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(crudRepository.save(crudEntity));
+    }
+
+    /* Endpoint de deleção */
+    @DeleteMapping("/crud/{id}")
+    public ResponseEntity<Object> deleteCrud(@PathVariable(value = "id") Long id) {
+        Optional<CrudEntity> productOne = crudRepository.findById(id);
+        if(productOne.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrao");
+        }
+        crudRepository.delete(productOne.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Produto removido com sucesso");
+    }
     
 }
+ 
