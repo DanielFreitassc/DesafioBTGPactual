@@ -30,11 +30,11 @@ public class CharacterService {
         return characterRepository.findAll().stream().map(characterMapper::toDTO).toList();
     }
 
-    public CharacterDTO getCharacterById(Long id) {
-        Optional<CharacterEntity> character = characterRepository.findById(id);
-        if(character.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum personagem com este ID");
-        return characterMapper.toDTO(character.get());
-    }
+   public CharacterDTO getCharacterById(Long id) {
+    Optional<CharacterEntity> character = characterRepository.findById(id);
+    if(character.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum personagem com este ID");
+    return characterMapper.toDTO(character.get());
+   }
 
     public CharacterDTO updateCharacter(Long id, CharacterDTO characterDTO) {
         Optional<CharacterEntity> character = characterRepository.findById(id);

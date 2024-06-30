@@ -37,15 +37,15 @@ public class CharacterController {
 
     @GetMapping("{id}")
     public CharacterDTO getCharacter(@PathVariable Long id) {
-        return getCharacter(id);
+        return characterService.getCharacterById(id);
     }
 
     @PutMapping("{id}")
     public CharacterDTO updateCharacter(@PathVariable Long id, @RequestBody @Valid CharacterDTO characterDTO) {
-        return updateCharacter(id, characterDTO);
+        return characterService.updateCharacter(id, characterDTO);
     }
     
-    @DeleteMapping
+    @DeleteMapping("{id}")
     public CharacterDTO deleteCharacter(@PathVariable Long id) {
         return characterService.deleteCharacter(id);
     }
