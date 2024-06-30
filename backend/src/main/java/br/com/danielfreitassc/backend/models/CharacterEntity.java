@@ -2,16 +2,11 @@ package br.com.danielfreitassc.backend.models;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -35,7 +30,11 @@ public class CharacterEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int birthplace;
+
+    @OneToOne
+    @JoinColumn(name = "city", referencedColumnName = "id")
+    private CityEntity birthplace;
+
     private String personality;
     private String description;
     
@@ -43,9 +42,9 @@ public class CharacterEntity {
     @JoinColumn(name = "weapon_id", referencedColumnName = "id")
     private WeaponEntity weapon;
     
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "character_group_id", referencedColumnName = "id")
-    private List<GroupEntity> character_group;
+    private GroupEntity character_group;
 
     @OneToMany
     @JoinColumn(name = "place_id", referencedColumnName = "id")
