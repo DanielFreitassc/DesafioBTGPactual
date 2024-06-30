@@ -14,39 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.danielfreitassc.backend.dtos.CharacterDTO;
-import br.com.danielfreitassc.backend.services.CharacterService;
+import br.com.danielfreitassc.backend.dtos.GroupDTO;
+import br.com.danielfreitassc.backend.services.GroupService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("character")
-public class CharacterController {
+@RequestMapping("group")
+public class GroupController {
     @Autowired
-    private CharacterService characterService;
+    private GroupService groupService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CharacterDTO createCharacter(@RequestBody @Valid CharacterDTO characterDTO) {
-        return characterService.createCharacter(characterDTO);
+    public GroupDTO createGroup(@RequestBody @Valid GroupDTO groupDTO) {
+        return groupService.createGroup(groupDTO);
     }
-    
+
     @GetMapping
-    public List<CharacterDTO> getAllCharacters() {
-        return characterService.getAllCharacters();
+    public List<GroupDTO> getAllGroups() {
+        return groupService.getAllGroups();
     }
 
     @GetMapping("{id}")
-    public CharacterDTO getCharacter(@PathVariable Long id) {
-        return getCharacter(id);
+    public GroupDTO getById(@PathVariable Long id) {
+        return groupService.getById(id);
     }
 
     @PutMapping("{id}")
-    public CharacterDTO updateCharacter(@PathVariable Long id, @RequestBody @Valid CharacterDTO characterDTO) {
-        return updateCharacter(id, characterDTO);
+    public GroupDTO updateGroup(@PathVariable Long id, @RequestBody @Valid GroupDTO groupDTO) {
+        return groupService.updateById(id, groupDTO);
     }
-    
-    @DeleteMapping
-    public CharacterDTO deleteCharacter(@PathVariable Long id) {
-        return characterService.deleteCharacter(id);
+
+    @DeleteMapping("{id}")
+    public GroupDTO deleteGroup(@PathVariable Long id) {
+        return groupService.deleteById(id);
     }
 }

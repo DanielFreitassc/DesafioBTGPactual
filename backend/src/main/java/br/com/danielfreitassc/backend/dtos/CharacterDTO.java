@@ -1,7 +1,10 @@
 package br.com.danielfreitassc.backend.dtos;
 
+import java.util.List;
+
 import br.com.danielfreitassc.backend.models.GroupEntity;
 import br.com.danielfreitassc.backend.models.PlaceEntity;
+import br.com.danielfreitassc.backend.models.RelationsEntity;
 import br.com.danielfreitassc.backend.models.WeaponEntity;
 
 public record CharacterDTO(
@@ -11,8 +14,9 @@ public record CharacterDTO(
     WeaponEntity weapon,
     int birthplace,
     String personality,
-    GroupEntity group,
-    PlaceEntity favorite_place
+    List<GroupEntity> character_group,
+    List<PlaceEntity> favorite_place,
+    List<RelationsEntity> relation_id
 
 ) {
     

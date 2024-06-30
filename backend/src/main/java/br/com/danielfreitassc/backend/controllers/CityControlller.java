@@ -14,39 +14,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.danielfreitassc.backend.dtos.CharacterDTO;
-import br.com.danielfreitassc.backend.services.CharacterService;
+import br.com.danielfreitassc.backend.dtos.CityDTO;
+import br.com.danielfreitassc.backend.services.CityService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("character")
-public class CharacterController {
+@RequestMapping("city")
+public class CityControlller {
+
     @Autowired
-    private CharacterService characterService;
+    private CityService cityService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CharacterDTO createCharacter(@RequestBody @Valid CharacterDTO characterDTO) {
-        return characterService.createCharacter(characterDTO);
+    public CityDTO createCity(@RequestBody @Valid CityDTO cityDTO) {
+        return cityService.createCity(cityDTO);
     }
-    
+
     @GetMapping
-    public List<CharacterDTO> getAllCharacters() {
-        return characterService.getAllCharacters();
+    public List<CityDTO> getAllCities() {
+        return cityService.getAllCities();
     }
 
     @GetMapping("{id}")
-    public CharacterDTO getCharacter(@PathVariable Long id) {
-        return getCharacter(id);
+    public CityDTO getById(@PathVariable Long id) {
+        return cityService.getCityById(id);
     }
 
     @PutMapping("{id}")
-    public CharacterDTO updateCharacter(@PathVariable Long id, @RequestBody @Valid CharacterDTO characterDTO) {
-        return updateCharacter(id, characterDTO);
+    public CityDTO updateCity(@PathVariable Long id, @RequestBody @Valid CityDTO cityDTO) {
+        return cityService.upadeCity(id, cityDTO);
+    }
+
+    @DeleteMapping("{id}")
+    public CityDTO deleteCity(@PathVariable Long id) {
+        return cityService.deleteCity(id);
     }
     
-    @DeleteMapping
-    public CharacterDTO deleteCharacter(@PathVariable Long id) {
-        return characterService.deleteCharacter(id);
-    }
 }

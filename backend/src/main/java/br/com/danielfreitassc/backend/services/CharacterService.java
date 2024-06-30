@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,8 +12,10 @@ import br.com.danielfreitassc.backend.dtos.CharacterDTO;
 import br.com.danielfreitassc.backend.mappers.CharacterMapper;
 import br.com.danielfreitassc.backend.models.CharacterEntity;
 import br.com.danielfreitassc.backend.repositories.CharacterRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CharacterService {
     @Autowired
     private CharacterRepository characterRepository;
@@ -22,14 +23,11 @@ public class CharacterService {
     private CharacterMapper characterMapper;
 
     public CharacterDTO createCharacter(CharacterDTO characterDTO) {
-        CharacterEntity characterEntity = characterMapper.toEntity(characterDTO);
-        CharacterEntity saveCharacter = characterRepository.save(characterEntity);
-        return characterMapper.toDTO(saveCharacter);
+        return characterMapper.toDTO(characterRepository.save(characterMapper.toEntity(characterDTO)));
     }
     
-    public List<CharacterDTO> getCharacters() {
-        List<CharacterEntity> characters = characterRepository.findAll();
-        return characters.stream().map(characterMapper::toDTO).toList();
+    public List<CharacterDTO> getAllCharacters() {
+        return characterRepository.findAll().stream().map(characterMapper::toDTO).toList();
     }
 
     public CharacterDTO getCharacterById(Long id) {

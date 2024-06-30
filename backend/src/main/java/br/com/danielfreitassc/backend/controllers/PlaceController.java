@@ -14,39 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.danielfreitassc.backend.dtos.CharacterDTO;
-import br.com.danielfreitassc.backend.services.CharacterService;
+import br.com.danielfreitassc.backend.dtos.PlaceDTO;
+import br.com.danielfreitassc.backend.services.PlaceService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("character")
-public class CharacterController {
+@RequestMapping("place")
+public class PlaceController {
     @Autowired
-    private CharacterService characterService;
+    private PlaceService placeService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CharacterDTO createCharacter(@RequestBody @Valid CharacterDTO characterDTO) {
-        return characterService.createCharacter(characterDTO);
+    public PlaceDTO createPlace(@RequestBody @Valid PlaceDTO placeDTO) {
+        return placeService.createPlace(placeDTO);
     }
-    
+
     @GetMapping
-    public List<CharacterDTO> getAllCharacters() {
-        return characterService.getAllCharacters();
+    public List<PlaceDTO> getAllPlaces() {
+        return placeService.getAllPlaces();
     }
 
     @GetMapping("{id}")
-    public CharacterDTO getCharacter(@PathVariable Long id) {
-        return getCharacter(id);
+    public PlaceDTO getPlaceById(@PathVariable Long id) {
+        return placeService.getById(id);
     }
 
     @PutMapping("{id}")
-    public CharacterDTO updateCharacter(@PathVariable Long id, @RequestBody @Valid CharacterDTO characterDTO) {
-        return updateCharacter(id, characterDTO);
+    public PlaceDTO updatePlace(@PathVariable Long id, @RequestBody @Valid PlaceDTO placeDTO) {
+        return placeService.updatePlaceById(id, placeDTO);
     }
-    
-    @DeleteMapping
-    public CharacterDTO deleteCharacter(@PathVariable Long id) {
-        return characterService.deleteCharacter(id);
+
+    @DeleteMapping("{id}")
+    public PlaceDTO deletePlaceById(@PathVariable Long id) {
+        return placeService.deletePlace(id);
     }
 }
