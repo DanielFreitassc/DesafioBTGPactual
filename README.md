@@ -109,3 +109,5 @@ Este endpoint retorna uma lista de pedidos realizados por um cliente, incluindo 
    
 3. **API REST**:
    - O microserviço deve expor um endpoint REST para consultar a lista de pedidos de um cliente, o valor total acumulado dos pedidos e a quantidade de pedidos por cliente.
+
+     
